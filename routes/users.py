@@ -4,7 +4,7 @@ from database import SessionLocal
 from models import User
 import secrets
 
-router = APIRouter(prefix="/users")
+router = APIRouter(prefix="")
 
 def get_db():
     db=SessionLocal()
