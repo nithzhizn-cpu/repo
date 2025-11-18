@@ -9,7 +9,6 @@ from routes.messages import router as messages_router
 from routes.calls import router as calls_router
 from routes.billing import router as billing_router
 
-# Створюємо таблиці
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="SpySignal Premium Backend")
@@ -23,26 +22,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# STATIC – тільки на /static
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Головна сторінка → index.html
-@app.get("/")
-def index():
-    return FileResponse("static/index.html")
-
-# API
+# -----------------------------------------
+# 🚀 API ЯВНО ПЕРШИМИ
+# -----------------------------------------
 app.include_router(users_router, prefix="/api")
 app.include_router(messages_router, prefix="/api")
 app.include_router(calls_router, prefix="/api")
 app.include_router(billing_router, prefix="/api")
 
-# Healthcheck (старий)
+# -----------------------------------------
+# HEALTHCHECKS
+# -----------------------------------------
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-# ✔ Новий healthcheck для FRONTEND
 @app.get("/api/health")
 def api_health():
     return {"status": "ok"}
+
+# -----------------------------------------
+# ГОЛОВНА СТОРІНКА
+# -----------------------------------------
+@app.get("/")
+def index():
+    return FileResponse("static/index.html")
+
+# -----------------------------------------
+# STATIC ТІЛЬКИ В САМОМУ КІНЦІ
+# -----------------------------------------
+app.mount("/static", StaticFiles(directory="static"), name="static")
