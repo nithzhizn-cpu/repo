@@ -2,19 +2,20 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text
 from sqlalchemy.sql import func
 from database import Base
 
+
 class User(Base):
-    tablename = 'users'
-    
+    tablename = "users"
+
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True)
-    token = Column(String, unique=True, index=True)      # 🔥 ОБОВʼЯЗКОВО: токен
+    token = Column(String, unique=True, index=True)
     is_pro = Column(Boolean, default=False)
     pro_until = Column(DateTime, nullable=True)
 
 
 class Message(Base):
-    tablename = 'messages'
-    
+    tablename = "messages"
+
     id = Column(Integer, primary_key=True, index=True)
     from_id = Column(Integer)
     to_id = Column(Integer)
@@ -24,8 +25,8 @@ class Message(Base):
 
 
 class CallSignal(Base):
-    tablename = 'calls'
-    
+    tablename = "calls"
+
     id = Column(Integer, primary_key=True, index=True)
     from_id = Column(Integer)
     to_id = Column(Integer)
