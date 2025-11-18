@@ -9,12 +9,15 @@ from routes.messages import router as messages_router
 from routes.calls import router as calls_router
 from routes.billing import router as billing_router
 
-# Створюємо таблиці (якщо їх ще немає)
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="SpySignal Premium Backend")
 
-# CORS
+@app.on_event("startup")
+def init_models():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,7 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Статика
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
@@ -32,7 +35,6 @@ def index():
     return FileResponse("static/index.html")
 
 
-# API маршрути
 app.include_router(users_router, prefix="/api")
 app.include_router(messages_router, prefix="/api")
 app.include_router(calls_router, prefix="/api")
