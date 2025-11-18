@@ -5,7 +5,7 @@ from models import User
 from schemas import UserOut
 import secrets
 
-router = APIRouter(prefix="/users")
+router = APIRouter(prefix=" ")
 
 def get_db():
     db = SessionLocal()
