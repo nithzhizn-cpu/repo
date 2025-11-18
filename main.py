@@ -22,33 +22,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# -----------------------------------------
-# 🚀 API ЯВНО ПЕРШИМИ
-# -----------------------------------------
+# -------------------------
+# API маршрути (мають бути першими!)
+# -------------------------
 app.include_router(users_router, prefix="/api")
 app.include_router(messages_router, prefix="/api")
 app.include_router(calls_router, prefix="/api")
 app.include_router(billing_router, prefix="/api")
 
-# -----------------------------------------
-# HEALTHCHECKS
-# -----------------------------------------
+# -------------------------
+# HEALTHCHECK
+# -------------------------
 @app.get("/health")
-def health():
+def root_health():
     return {"status": "ok"}
 
 @app.get("/api/health")
 def api_health():
     return {"status": "ok"}
 
-# -----------------------------------------
+# -------------------------
 # ГОЛОВНА СТОРІНКА
-# -----------------------------------------
+# -------------------------
 @app.get("/")
-def index():
+def root():
     return FileResponse("static/index.html")
 
-# -----------------------------------------
-# STATIC ТІЛЬКИ В САМОМУ КІНЦІ
-# -----------------------------------------
+# -------------------------
+# STATIC — монтуємо тільки на /static
+# -------------------------
 app.mount("/static", StaticFiles(directory="static"), name="static")
