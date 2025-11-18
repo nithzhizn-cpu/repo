@@ -13,7 +13,6 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="SpySignal Premium Backend")
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,33 +21,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# -------------------------
-# API маршрути (мають бути першими!)
-# -------------------------
+# 1️⃣ API маршрути — завжди йдуть першими
 app.include_router(users_router, prefix="/api")
 app.include_router(messages_router, prefix="/api")
 app.include_router(calls_router, prefix="/api")
 app.include_router(billing_router, prefix="/api")
 
-# -------------------------
-# HEALTHCHECK
-# -------------------------
+# 2️⃣ health-check (тепер працюватиме)
 @app.get("/health")
-def root_health():
+def health_root():
     return {"status": "ok"}
 
 @app.get("/api/health")
-def api_health():
+def health_api():
     return {"status": "ok"}
 
-# -------------------------
-# ГОЛОВНА СТОРІНКА
-# -------------------------
+# 3️⃣ Головна сторінка — index.html
 @app.get("/")
-def root():
+def serve_index():
     return FileResponse("static/index.html")
 
-# -------------------------
-# STATIC — монтуємо тільки на /static
-# -------------------------
+# 4️⃣ STATIC — монтуємо тільки на /static і ТІЛЬКИ ТУТ
 app.mount("/static", StaticFiles(directory="static"), name="static")
