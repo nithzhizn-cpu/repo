@@ -6,12 +6,12 @@ from datetime import datetime
 class UserOut(BaseModel):
     id: int
     username: str
-    token: str | None = None          # 🔥 ДОДАНО
     is_pro: bool = False
 
     model_config = {
         "from_attributes": True
     }
+
 
 class AccountStatus(BaseModel):
     id: int
@@ -23,8 +23,10 @@ class AccountStatus(BaseModel):
         "from_attributes": True
     }
 
+
 class FakeUpgradeRequest(BaseModel):
     user_id: int
+
 
 class UserCreate(BaseModel):
     username: str
@@ -42,9 +44,11 @@ class CallOffer(BaseModel):
     to: int
     sdp: str
 
+
 class CallAnswer(BaseModel):
     to: int
     sdp: str
+
 
 class Candidate(BaseModel):
     to: int
