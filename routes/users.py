@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import User
+from schemas import UserOut
 import secrets
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/users")
 
 def get_db():
     db = SessionLocal()
@@ -13,50 +14,23 @@ def get_db():
     finally:
         db.close()
 
-
-# -------------------------------
-#  REGISTER ( /api/users/register )
-# -------------------------------
-
-@router.post("/register")
+@router.post("/register", response_model=UserOut)
 def register(data: dict, db: Session = Depends(get_db)):
-    username = data["username"].strip()
+    username = data["username"]
 
-    if not username:
-        raise HTTPException(status_code=400, detail="Username required")
-
-    # Перевірка чи існує вже
     existing = db.query(User).filter(User.username == username).first()
     if existing:
-        return {
-            "id": existing.id,
-            "username": existing.username,
-            "token": secrets.token_hex(16)
-        }
+        return existing
 
     user = User(username=username)
     db.add(user)
     db.commit()
     db.refresh(user)
-
-    return {
-        "id": user.id,
-        "username": user.username,
-        "token": secrets.token_hex(16)
-    }
-
-
-# ------------------------------------
-#  SEARCH USERS ( /api/users/search )
-# ------------------------------------
+    return user
 
 @router.get("/search")
-def search_users(query: str, db: Session = Depends(get_db)):
+def search(query: str, db: Session = Depends(get_db)):
     q = query.strip()
-
-    results = db.query(User).filter(
-        (User.username.ilike(f"%{q}%")) |
-        (User.id == q)
-    ).all()
-
-    return {"results": results}
+    users = db.query(User).filter(User.username.ilike(f"%{q}%")).all()
+    # Можеш зробити більш гнучкий пошук (id+username)
+    return {"results": [UserOut.from_orm(u) for u in users]}
