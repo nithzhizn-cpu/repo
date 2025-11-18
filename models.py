@@ -6,6 +6,9 @@ class User(Base):
     __tablename__='users'
     id=Column(Integer, primary_key=True, index=True)
     username=Column(String, unique=True)
+    # NEW:
+    is_pro = Column(Boolean, default=False)
+    pro_until = Column(DateTime, nullable=True)
 
 class Message(Base):
     __tablename__='messages'
