@@ -8,7 +8,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
-    token = Column(String, unique=True, index=True)
+    token = Column(String, unique=True, index=True)  # NEW
     is_pro = Column(Boolean, default=False)
     pro_until = Column(DateTime, nullable=True)
 
